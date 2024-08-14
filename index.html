@@ -1,0 +1,94 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="content">
+        <div class="border rounded m-3 p-3">
+            <input type="text" id="bank" placeholder="Banco">
+            <input type="text" id="totalLimit" placeholder="Limite Total">
+            <input type="text" id="usedLimit" placeholder="Limite usado">
+            <input type="text" id="leftLimit" placeholder="Limite disponível">
+            <button class="btn btn-light" onclick="triggerAll()">➕</button>
+        </div>
+        <div class="border rounded m-3 p-3" id="result">
+            Aguardando conteúdo
+        </div>
+        <div class="border rounded m-3 p-3" style="display: flex;">
+            <input type="number" placeholder="Total" id="total">
+            <input type="number" placeholder="0" id="calcTotalLimit">
+            <input type="number" placeholder="0" id="calcUsedLimit">
+            <input type="number" placeholder="0" id="calcLeftLimit">
+            <div id="loader">⏲️</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        let banks = [];
+        let calcTotalLimit = parseFloat(0, 10);
+        let calcUsedLimit = parseFloat(0, 10);
+        let calcLeftLimit = parseFloat(0, 10);
+
+        function triggerAll() {
+            addEntity();
+            calcStuff();
+        }
+
+        function calcStuff() {
+            banks.forEach(element => {
+                calcTotalLimit += parseFloat(element.totalLimit);
+                calcUsedLimit += parseFloat(element.usedLimit);
+                calcLeftLimit += parseFloat(element.leftLimit);
+            });
+
+            document.getElementById('calcTotalLimit').value = calcTotalLimit.toFixed(2);
+            document.getElementById('calcUsedLimit').value = calcUsedLimit.toFixed(2);
+            document.getElementById('calcLeftLimit').value = calcLeftLimit.toFixed(2);
+        }
+
+        function addEntity() {
+            document.getElementById('loader').textContent = '🔍';
+
+            const bank = document.getElementById('bank').value;
+            const totalLimit = document.getElementById('totalLimit').value;
+            const usedLimit = document.getElementById('usedLimit').value;
+            const leftLimit = document.getElementById('leftLimit').value;
+
+            banks.push({ bank, totalLimit, usedLimit, leftLimit });
+
+            if (banks.length > 0) {
+                let newcontent = '<table class="table"><thead class="thead-dark"><tr><th scope="col">Banco</th><th scope="col">Limite total</th><th scope="col">Limite usado</th><th scope="col">Limite disponível</th></tr></thead><tbody>';
+
+                banks.forEach(element => {
+                    newcontent += `
+                        <tr>
+                            <td>${element.bank}</td>
+                            <td>R$ ${element.totalLimit}</td>
+                            <td>R$ ${element.usedLimit}</td>
+                            <td>R$ ${element.leftLimit}</td>
+                        </tr>
+                    `;
+                });
+
+                newcontent += '</tbody></table>';
+                document.getElementById('result').innerHTML = newcontent;
+            }
+
+            document.getElementById('loader').textContent = '✅';
+
+            console.log(banks);
+        }
+    </script>
+</body>
+
+</html>
